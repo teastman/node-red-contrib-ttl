@@ -4,9 +4,9 @@
   "description": "A Node-RED node for timing and killing stale messages.",
   "repository": {
     "type": "git",
-    "url": "https://github.com/teastman/node-red-contrib-ttl"
+    "url": "git+https://github.com/teastman/node-red-contrib-ttl.git"
   },
-  "license": "Apache",
+  "license": "Apache-2.0",
   "keywords": [
     "node-red",
     "ttl",
@@ -19,14 +19,16 @@
       "ttl": "ttl.js"
     }
   },
-  "author": {
-    "name": "Tyler Eastman",
-    "email": "tyler.eastman@gmail.com"
-  },
+  "author": "Tyler Eastman <tyler.eastman@gmail.com>",
   "maintainers": [
-    {
-      "name": "teastman",
-      "email": "tyler.eastman@gmail.com"
-    }
-  ]
+    "teastman <tyler.eastman@gmail.com>"
+  ],
+  "bugs": {
+    "url": "https://github.com/teastman/node-red-contrib-ttl/issues"
+  },
+  "homepage": "https://github.com/teastman/node-red-contrib-ttl#readme",
+  "main": "ttl.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
 }
