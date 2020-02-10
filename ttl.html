@@ -1,0 +1,149 @@
+<!--
+  Copyright 2020 Tyler Eastman.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<script type="text/x-red" data-template-name="ttl-set">
+    <div class="form-row">
+        <label for="node-input-ttl"><i class="fa fa-clock-o"></i><span data-i18n="ttl.ttl"></span></label>
+        <input type="hidden" id="node-input-ttlType" />
+        <input style="width: 70%" type="text" id="node-input-ttl" />
+    </div>
+    <div class="form-row">
+        <label for="node-input-units"><span data-i18n="ttl.units"></span></label>
+        <input type="hidden" id="node-input-unitsType" />
+        <input style="width: 70%" type="text" id="node-input-units" />
+    </div>
+    <hr align="middle"/>
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="ttl.name"></span></label>
+        <input type="text" id="node-input-nodeName" />
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="ttl-set">
+      <p>Adds a Time of Death (_tod) parameter to the message.</p>
+      <h3>Details</h3>
+      <p><code>ttl set</code> node will add a time of death <code>_tod</code> parameter to any message that passes through it.
+      The <code>_tod</code> parameter is a timestamp that is equal to the time the message arrived at the node plus the amount of time
+      set in the TTL property of the node.</p>
+      <p>If units is not set or is invalid, it will default to seconds.</p>
+      <p>This node is to be paired with the <code>ttl</code> check node.</p>
+      <h3>References</h3>
+      <ul>
+          <li><a href="https://github.com/teastman/node-red-contrib-ttl">GitHub</a> - node-red-contrib-ttl repository</li>
+      </ul>
+</script>
+
+<script type="text/javascript">
+    RED.nodes.registerType("ttl-set", {
+        category: "function",
+        color: "#E6E0F8",
+        defaults: {
+            ttl: { value: "", validate: RED.validators.typedInput("ttlType"), required: true },
+            ttlType: { value: "num" },
+            units: { value: "seconds", validate: RED.validators.typedInput("unitsType"), required: true },
+            unitsType: { value: "select" },
+            nodeName: { value: "" }
+        },
+        inputs: 1,
+        outputs: 1,
+        paletteLabel: 'ttl set',
+        icon: "ttl-set.png",
+        label: function () {
+            return this.nodeName || "ttl set";
+        },
+        oneditprepare: function () {
+            $("#node-input-ttl").typedInput({
+                default: 'num',
+                typeField: $("#node-input-ttlType"),
+                types: ['msg', 'flow', 'global', 'num', 'jsonata', 'env']
+            });
+
+            var ttlUnitsOptions = { value: "select", label: "=", options: ["Milliseconds", "Seconds", "Minutes", "Hours"] };
+            $("#node-input-units").typedInput({
+                default: 'select',
+                typeField: $("#node-input-unitsType"),
+                types: [ttlUnitsOptions, 'msg', 'flow', 'global', 'str', 'jsonata', 'env']
+            });
+        }
+    });
+</script>
+
+<script type="text/x-red" data-template-name="ttl-check">
+    <div class="form-row">
+        <input type="checkbox" id="node-input-throwErrors" style="display: inline-block; width: auto; vertical-align: top;" />
+        <label for="node-input-throwErrors" style="width: auto;"><span data-i18n="ttl.error"></span></label>
+    </div>
+    <div class="form-row">
+        <input type="checkbox" id="node-input-killNoTod" style="display: inline-block; width: auto; vertical-align: top;" />
+        <label for="node-input-killNoTod" style="width: auto;"><span data-i18n="ttl.kill"></span></label>
+    </div>
+    <div class="form-row">
+        <input type="checkbox" id="node-input-outputDeaths" style="display: inline-block; width: auto; vertical-align: top;" />
+        <label for="node-input-outputDeaths" style="width: auto;"><span data-i18n="ttl.deaths"></span></label>
+        <input id="node-input-outputs" type="hidden">
+    </div>
+    <hr align="middle"/>
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="ttl.name"></span></label>
+        <input type="text" id="node-input-nodeName" />
+    </div>
+  </script>
+
+<script type="text/x-red" data-help-name="ttl-check">
+      <p>Checks the Time of Death (_tod) parameter.</p>
+      <h3>Details</h3>
+      <p><code>ttl</code> check node will compare the <code>_tod</code> parameter of a message with the current time.  
+      If the current time is past the <code>_tod</code> the message will be considered dead and not be propegated.</p>
+      <p>If the "error" option is selected the node will throw an error when a dead message is received.</p>
+      <p>If the "kill no ttl" option is set, any message that has no <code>_tod</code> parameter will be considered dead.</p>
+      <p>If the "output deaths" option is set, a second output will be made available for propegating the dead message.</p>
+      <p>This node is to be paired with the <code>ttl set</code> node.</p>
+      <h3>References</h3>
+      <ul>
+          <li><a href="https://github.com/teastman/node-red-contrib-ttl">GitHub</a> - node-red-contrib-ttl repository</li>
+      </ul>
+  </script>
+
+<script type="text/javascript">
+    RED.nodes.registerType('ttl-check', {
+        category: 'function',
+        color: "#E2D96E",
+        defaults: {
+            throwErrors: { value: false },
+            killNoTod: { value: false },
+            outputDeaths: { value: false },
+            outputs: { value: 1 },
+            nodeName: { value: "" }
+        },
+        inputs: 1,
+        outputs: 1,
+        paletteLabel: 'ttl check',
+        icon: "ttl-check.png",
+        label: function () {
+            return this.nodeName || 'ttl';
+        },
+        outputLabels: function(index) {
+            return index == 0 ? "live" : "dead";
+        },
+        oneditprepare: function () {
+            var outDeaths = $("#node-input-outputDeaths").is(':checked');
+            $("#node-input-outputs").val(Number(outDeaths) + 1);
+            $("#node-input-outputDeaths").on("click",function() {
+                outDeaths = !outDeaths;
+                $("#node-input-outputs").val(Number(outDeaths) + 1);
+            });
+        }
+    });
+</script>

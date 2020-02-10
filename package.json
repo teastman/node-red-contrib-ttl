@@ -1,0 +1,32 @@
+{
+  "name": "node-red-contrib-ttl",
+  "version": "1.0.0",
+  "description": "A Node-RED node for timing and killing stale messages.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/teastman/node-red-contrib-ttl"
+  },
+  "license": "Apache",
+  "keywords": [
+    "node-red",
+    "ttl",
+    "time to live",
+    "expire",
+    "message"
+  ],
+  "node-red": {
+    "nodes": {
+      "ttl": "ttl.js"
+    }
+  },
+  "author": {
+    "name": "Tyler Eastman",
+    "email": "tyler.eastman@gmail.com"
+  },
+  "maintainers": [
+    {
+      "name": "teastman",
+      "email": "tyler.eastman@gmail.com"
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "ttl": {
+    "ttk": "TTL",
+    "units": "Units",
+    "name": "Node Name",
+    "error": "Throw Errors",
+    "kill": "Kill no TTL",
+    "deaths": "Output Deaths"
+  }
+}
